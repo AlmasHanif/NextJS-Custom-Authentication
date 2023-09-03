@@ -1,6 +1,8 @@
+"use client";
 import React from "react";
 import Link from "next/link";
 import { Form } from "../components/Form";
+
 function LoginPage() {
 
 
@@ -12,6 +14,7 @@ function LoginPage() {
         isLogin={true}
         apiUrl="http://localhost:3000/api/auth/login"
       />
+
       <div className="all-links">
         <Link href={"/"}>home</Link>
         <Link href={"/profile"}>Profile</Link>

@@ -5,6 +5,13 @@
       "name": "hamza alvi",
       "email": "hamza@h.com",
       "password": "$2a$10$R8YYu7OByy0Zd34Lfm7CSe1C6O/93XdtlsxpiCPlHvkkZh3eHYioC"
+    },
+    {
+      "_id": "QbOOQ8tPoDmCUat",
+      "name": "almas",
+      "email": "almas@gmail.com",
+      "password": "$2a$10$MOgpsyC/Nmjt5mh3mjeZE.c29ktNNM2uVr2ERZpa1XQ9VYv3E0Hky"
     }
+  
   ]
 }

@@ -1,6 +1,9 @@
 "use client";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "react-hot-toast";
+import ReCAPTCHA from "react-google-recaptcha";
+
 interface formProps {
   btnTitle: string;
   isLogin?: boolean;
@@ -15,6 +18,7 @@ function Form(props: formProps) {
     email: "",
   });
   const [btnText, setBtnText] = useState(btnTitle);
+  const [limiterError, setLimiterError] = useState("")
   const router = useRouter();
 
   const handleFormValueChange = (evt: React.ChangeEvent<HTMLInputElement>) =>
@@ -32,18 +36,46 @@ function Form(props: formProps) {
       });
       const result = await response.json();
       console.log(result, "result");
+      setLimiterError(result.message)
+      toast.error(result.error || result.message)
       if (result?.message) {
         setBtnText("Success");
         const redirectPath = isLogin ? "/" : "/login";
         router.push(redirectPath);
       }
-    } catch (error) {
+    } catch (err: any) {
+      toast.error(err.message)
       setBtnText("Something went wrong");
-      console.log(error);
+      console.log(err);
     } finally {
     }
   };
 
+  const handleCaptchaChange = async (value: any) => {
+    try {
+      const response = await fetch("/api/auth/captcha", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ value }),
+      });
+
+      const data = await response.json();
+
+      if (data.message === "successfully pass captcha") {
+        console.log(data.message, "data")
+        alert("now try login again ")
+        // CAPTCHA verified successfully, proceed with form submission
+      } else {
+        // CAPTCHA verification failed, display an error message
+        alert("wrong captcha try after 5 minutes")
+      }
+    } catch (error) {
+      console.error("Captcha verification error:", error);
+    }
+
+  };
   return (
     <div className="main-form">
       <form onSubmit={handleFormSubmit}>
@@ -79,8 +111,19 @@ function Form(props: formProps) {
             value={formValues.password}
           />
         </label>
+        {isLogin && limiterError ===
+          "429 Too Many Requests - your IP is being rate limited" ?
+          <ReCAPTCHA
+            sitekey="6LedaPUnAAAAAKMOjzjkJTOBpD-4Fp0QcRa5hEtB"
+            onChange={handleCaptchaChange}
+          />
+          : null}
+
+
+
         <button type="submit">{btnText}</button>
       </form>
+
     </div>
   );
 }

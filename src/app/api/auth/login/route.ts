@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import { findUnique } from "@/helpers";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { Limiter } from "@/config/limiter";
 
 export const POST = async (req: NextRequest) => {
   try {
@@ -16,9 +17,23 @@ export const POST = async (req: NextRequest) => {
       );
     }
     const isValidPassword = await bcryptjs.compare(password, user.password);
-
+    let resetTimer;
     if (!isValidPassword) {
-      return NextResponse.json({ error: "Invalid password" }, { status: 400 });
+      const remainingRequests = await Limiter.removeTokens(1);
+        console.log(Limiter.tokenBucket.content , "remaining token")
+      if (remainingRequests < 0) {
+        return NextResponse.json(
+          { message: '429 Too Many Requests - your IP is being rate limited' },
+          { status: 429 }
+        )
+      }
+      else {
+        console.log("Remaining requests", remainingRequests);
+      }
+      return NextResponse.json(
+        { error: "Invalid password" },
+        { status: 400 }
+      );
     }
 
     const token = await jwt.sign(

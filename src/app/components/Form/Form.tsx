@@ -114,7 +114,7 @@ function Form(props: formProps) {
         {isLogin && limiterError ===
           "429 Too Many Requests - your IP is being rate limited" ?
           <ReCAPTCHA
-            sitekey="6LedaPUnAAAAAKMOjzjkJTOBpD-4Fp0QcRa5hEtB"
+            sitekey="add your site key"
             onChange={handleCaptchaChange}
           />
           : null}

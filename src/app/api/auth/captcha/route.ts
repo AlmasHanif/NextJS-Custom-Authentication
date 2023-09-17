@@ -6,7 +6,7 @@ export const  POST = async (req :NextRequest ) => {
 
     const { value } = await req.json();
     console.log(value, "captcha value")
-    const secretKey = "6LedaPUnAAAAADWHRv_ErMdERTOPRRoZS5PILPdm"; // Replace with your reCAPTCHA secret key
+    const secretKey = "add your key"; // Replace with your reCAPTCHA secret key
 
     const verificationResponse = await axios.post(
       "https://www.google.com/recaptcha/api/siteverify",
